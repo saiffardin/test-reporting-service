@@ -543,5 +543,11 @@ arrayAsstPresidingOfficers?.forEach((item,indx) => {
 
 })
 
+
+if (array1D?.length > 0) {
+  array2D.push(array1D);
+
+}
+
 console.log('array2D:',array2D)
   
