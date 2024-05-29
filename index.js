@@ -481,21 +481,67 @@ const response = {
   ]
 }
 
-
 const arrayAsstPresidingOfficers = response?.data?.[0]?.presidingOfficer?.assistantPresidingOfficers
 
 const chunkSize = 5;
 const array2D = [];
+let array1D = [];
 
 let spaceLeft = chunkSize;
 
-arrayAsstPresidingOfficers?.forEach(item => {
+arrayAsstPresidingOfficers?.forEach((item,indx) => {
   console.log('item:',item)
-  console.log('length:',item?.pollingOfficers?.length)
 
   const pollingOfficersLength = item?.pollingOfficers?.length || 0;
 
-  spaceLeft = spaceLeft - pollingOfficersLength;
+  console.log({pollingOfficersLength,spaceLeft})
+
+  if (spaceLeft >= pollingOfficersLength ) {
+    console.log('%cpush all into 1D array','color:yellow')
+    array1D.push(item);
+    spaceLeft = spaceLeft - pollingOfficersLength;
+  }
+
+  else if (spaceLeft>0) {
+    console.log('%ckisu add korbo. kisu baad dibo','color:red')
+
+    const arrCurrent = item?.pollingOfficers?.slice(0,spaceLeft);
+    const arrNext = item?.pollingOfficers?.slice(spaceLeft);
+
+    const currentObj = {
+      ...item,
+      pollingOfficers: arrCurrent
+    };
+
+    const nextObj = {
+      ...item,
+      pollingOfficers: arrNext
+    };
+
+    array1D.push(currentObj);
+    array2D.push(array1D);
+    array1D = [];
+    array1D.push(nextObj);
+
+    spaceLeft = chunkSize - (arrNext?.length || 0);
+
+    console.log('currentObj:',currentObj)
+    console.log('nextObj:',nextObj)
+    
+  }
+
+  else if (spaceLeft===0) {
+    array2D.push(array1D);
+    array1D = [];
+    spaceLeft = chunkSize
+  }
+
+  console.log('updated spaceLeft:',spaceLeft)
+
 
   console.log('-------------')
+
 })
+
+console.log('array2D:',array2D)
+  
